@@ -1,0 +1,5 @@
+numpy~=2.3.3
+tf-keras==3.11.3
+sentence_transformers==5.1.0
+flask==3.1.2
+tensorflow==2.20.0
