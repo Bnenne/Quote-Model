@@ -3,7 +3,7 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
 ARG PYTHON_VERSION=3.10
-FROM python:${PYTHON_VERSION}-slim as base
+FROM python:${PYTHON_VERSION}-alpine as base
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
 # Keeps Python from buffering stdout and stderr to avoid situations where
@@ -33,6 +33,6 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Copy the source code into the container.
 COPY . .
 # Expose the port that the application listens on.
-EXPOSE 8080
+EXPOSE 5000
 # Run the application.
-CMD flask run --port=3000 --host=0.0.0.0
+CMD flask run --port=5000 --host=0.0.0.0
