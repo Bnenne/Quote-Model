@@ -5,6 +5,7 @@ from keras.models import load_model
 
 app = Flask(__name__)
 
+# Loading models here so it only has to once on container start
 encoding_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 clf_model = load_model("src/quote_classifier_model_v1_2.keras")
 
