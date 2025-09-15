@@ -6,7 +6,7 @@ from keras.models import load_model
 app = Flask(__name__)
 
 encoding_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-clf_model = load_model("src/quote_classifier_model_v1_1.keras")
+clf_model = load_model("src/quote_classifier_model_v1_2.keras")
 
 @app.route('/predict')
 def predict():
