@@ -12,6 +12,8 @@ clf_model = load_model("src/quote_classifier_model_v1_2.keras")
 @app.route('/predict')
 def predict():
     print("Incoming request")
+
+    # The message data is in the headers
     message = request.headers.get('Message')
 
     prediction = get_prediction(message, encoding_model, clf_model)
