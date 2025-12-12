@@ -19,6 +19,8 @@ jobs:
         id-token: write
 
     steps:
+      - run: echo ${{ github.repository }}
+    
       # Clean up unnecessary files to increase disk space
       - name: Increase disk space
         run: |
