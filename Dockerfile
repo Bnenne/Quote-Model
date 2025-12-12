@@ -10,7 +10,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies into the system
-RUN uv pip install --system --no-cache -r requirements.txt
+RUN uv pip install --no-cache -r requirements.txt
 
 # Stage 2: Final runtime image
 FROM python:3.12-slim
