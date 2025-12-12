@@ -1,39 +1,42 @@
-# syntax=docker/dockerfile:1
+# Stage 1: Build dependencies with uv
+FROM python:3.12-slim AS builder
 
-ARG PYTHON_VERSION=3.10
-FROM python:${PYTHON_VERSION}-slim as base
+# Install uv (fast Python package installer)
+RUN pip install --no-cache-dir uv
 
-# Install UV (ultra-fast Python package manager)
-RUN pip install uv
+# Set working directory
+WORKDIR /app
 
-# Prevent Python from writing pyc files and buffering logs
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Copy dependency file (pyproject.toml + optional uv.lock)
+COPY pyproject.toml uv.lock* ./
+
+# Install dependencies into a local folder (no venv, for portability)
+RUN uv pip install --system --no-cache .
+
+# Stage 2: Final runtime image
+FROM python:3.12-slim
+
+# Create a non-root user for security
+RUN useradd -m appuser
 
 WORKDIR /app
 
-# Create a non-privileged user
-ARG UID=10001
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser
+# Copy installed dependencies from builder
+COPY --from=builder /usr/local /usr/local
 
-# Install dependencies using uv
-# Uses Docker cache mounts to maximize speed
-RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
-    --mount=type=cache,target=/root/.cache/uv \
-    uv add -r requirements.txt
-
-USER appuser
-
-# Copy project files
+# Copy application code
 COPY . .
 
+# Switch to non-root user
+USER appuser
+
+# Expose Flask default port
 EXPOSE 5000
 
-CMD uv run flask run --port=5000 --host=0.0.0.0
+# Set environment variables for Flask
+ENV FLASK_APP=app.py \
+    FLASK_RUN_HOST=0.0.0.0 \
+    PYTHONUNBUFFERED=1
+
+# Run Flask app
+CMD ["flask", "run"]
