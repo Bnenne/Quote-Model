@@ -27,7 +27,7 @@ RUN adduser \
 # Uses Docker cache mounts to maximize speed
 RUN --mount=type=bind,source=requirements.txt,target=requirements.txt \
     --mount=type=cache,target=/root/.cache/uv \
-    uv pip install -r requirements.txt
+    uv add -r requirements.txt
 
 USER appuser
 
