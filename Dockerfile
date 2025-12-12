@@ -1,5 +1,5 @@
 # Stage 1: Build dependencies with uv
-FROM python:3.12-slim AS builder
+FROM python:3.12-alpine AS builder
 
 # Install uv (fast Python package installer)
 RUN pip install --no-cache-dir uv
@@ -10,7 +10,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies into the system
-RUN uv pip install --no-cache -r requirements.txt
+RUN uv pip install --system --no-cache -r requirements.txt
 
 # Stage 2: Final runtime image
 FROM python:3.12-slim
